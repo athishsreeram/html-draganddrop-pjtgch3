@@ -8,17 +8,20 @@ function App() {
     {
       id: 1,
       label: 'Heading',
-      content: '<h2 id="heading" class="heading-class" style="font-family: Arial, sans-serif; font-weight: normal; font-size: 24px; color: red; text-align: left; line-height: 1.5;">Heading Text</h2>',
+      content:
+        '<h2 id="heading" class="heading-class" style="font-family: Arial, sans-serif; font-weight: normal; font-size: 24px; color: red; text-align: left; line-height: 1.5;">Heading Text</h2>',
     },
     {
       id: 2,
       label: 'Text Content',
-      content: '<p id="text" class="text-class" style="font-family: Arial, sans-serif; font-weight: normal; font-size: 16px; color: black; text-align: left; line-height: 1.5; background-color: lightblue; padding: 10px;">More text content</p>',
+      content:
+        '<p id="text" class="text-class" style="font-family: Arial, sans-serif; font-weight: normal; font-size: 16px; color: black; text-align: left; line-height: 1.5; background-color: lightblue; padding: 10px;">More text content</p>',
     },
     {
       id: 3,
       label: 'Image',
-      content: '<img id="image" class="image-class" src="https://via.placeholder.com/150" alt="Yet Another Image" style="font-family: Arial, sans-serif; font-weight: normal; font-size: 16px; color: black; text-align: left; line-height: 1.5; border: 1px solid black; border-radius: 50%;" />',
+      content:
+        '<img id="image" class="image-class" src="https://via.placeholder.com/150" alt="Yet Another Image" style="font-family: Arial, sans-serif; font-weight: normal; font-size: 16px; color: black; text-align: left; line-height: 1.5; border: 1px solid black; border-radius: 50%;" />',
     },
     {
       id: 4,
@@ -59,12 +62,14 @@ function App() {
     {
       id: 6,
       label: 'Hyperlink',
-      content: '<a href="https://example.com" style="font-family: Arial, sans-serif; font-weight: normal; font-size: 24px; color: blue; text-align: left; line-height: 1.5;">Link Text</a>',
+      content:
+        '<a href="https://example.com" style="font-family: Arial, sans-serif; font-weight: normal; font-size: 24px; color: blue; text-align: left; line-height: 1.5;">Link Text</a>',
     },
     {
       id: 7,
       label: 'Banner Image',
-      content: '<img src="https://via.placeholder.com/720x80" alt="Banner Image" style=" display: block; margin-left: auto; margin-right: auto; max-width: 100%;font-family: Arial, sans-serif; font-weight: normal; font-size: 16px; color: black; text-align: left; line-height: 1.5; border: 1px solid black;" />',
+      content:
+        '<img src="https://via.placeholder.com/720x80" alt="Banner Image" style=" display: block; margin-left: auto; margin-right: auto; max-width: 100%;font-family: Arial, sans-serif; font-weight: normal; font-size: 16px; color: black; text-align: left; line-height: 1.5; border: 1px solid black;" />',
     },
     {
       id: 8,
@@ -121,22 +126,24 @@ function App() {
       `,
     },
   ]);
-  
 
   const [leftSideItems, setLeftSideItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [editedContent, setEditedContent] = useState('');
   const [leftItemIdCounter, setLeftItemIdCounter] = useState(1);
   const [editableAttributes, setEditableAttributes] = useState([]);
+  const [editableStyles, setEditableStyles] = useState([]);
 
   // State variables for Edit Style
-  const [headingType, setHeadingType] = useState('h2');
-  const [fontFamily, setFontFamily] = useState('Arial, sans-serif');
-  const [fontWeight, setFontWeight] = useState('normal');
-  const [fontSize, setFontSize] = useState('24px');
-  const [color, setColor] = useState('red');
-  const [textAlign, setTextAlign] = useState('left');
-  const [lineHeight, setLineHeight] = useState('1.5');
+  const [styles, setStyles] = useState({
+    headingType: 'h2',
+    fontFamily: 'Arial, sans-serif',
+    fontWeight: 'normal',
+    fontSize: '24px',
+    color: 'red',
+    textAlign: 'left',
+    lineHeight: '1.5',
+  });
 
   useEffect(() => {
     if (selectedItem) {
@@ -209,12 +216,9 @@ function App() {
         // Check if the element has style properties
         if (element.style) {
           // Update style properties based on user input
-          element.style.fontFamily = fontFamily;
-          element.style.fontWeight = fontWeight;
-          element.style.fontSize = fontSize;
-          element.style.color = color;
-          element.style.textAlign = textAlign;
-          element.style.lineHeight = lineHeight;
+          Object.keys(styles).forEach((style) => {
+            element.style[style] = styles[style];
+          });
 
           // Update the edited content with the modified style
           updatedContent = tempDiv.innerHTML;
@@ -269,85 +273,95 @@ function App() {
     }
   };
 
+  const handleStyleChange = (e, index) => {
+    const newStyles = { ...styles };
+    const styleName = Object.keys(newStyles)[index];
+    newStyles[styleName] = e.target.value;
+    setStyles(newStyles);
+  };
+
   const handleSaveAsHTML = () => {
     // Construct the HTML content with styles
-    const styles = `
-      <style>
-        .App {
-          text-align: center;
-          margin-top: 50px;
-        }
-  
-        .drop-container {
-          display: flex;
-        }
-  
-        .drop-space {
-          border: 1px solid black;
-          min-height: 500px;
-          width: 80%;
-        }
-  
-        .component-list {
-          margin-top: 20px;
-        }
-  
-        .draggable-item {
-          margin: 10px;
-          cursor: move;
-        }
-  
-        .dropped-item {
-          position: relative;
-        }
-  
-        .two-column-layout {
-          display: flex;
-        }
-  
-        .two-column-layout .column {
-          flex: 1;
-          padding: 10px;
-          border: 1px solid #ccc;
-          margin: 0 5px;
-        }
-  
-        .three-column-layout {
-          display: flex;
-        }
-  
-        .three-column-layout .column {
-          flex: 1;
-          padding: 10px;
-          border: 1px solid #ccc;
-          margin: 0 5px;
-        }
-      </style>
-    `;
-  
-    let leftDropSpaceHTML = `<html><head><title>Left Drop Space Preview</title>${styles}</head><body>   <div className="drop-container">
+    const stylesString = Object.entries(styles)
+      .map(([style, value]) => `${style}: ${value};`)
+      .join(' ');
+
+    const stylesHtml = `<style>
+      .App {
+        text-align: center;
+        margin-top: 50px;
+      }
+
+      .drop-container {
+        display: flex;
+      }
+
+      .drop-space {
+        border: 1px solid black;
+        min-height: 500px;
+        width: 80%;
+      }
+
+      .component-list {
+        margin-top: 20px;
+      }
+
+      .draggable-item {
+        margin: 10px;
+        cursor: move;
+      }
+
+      .dropped-item {
+        position: relative;
+      }
+
+      .two-column-layout {
+        display: flex;
+      }
+
+      .two-column-layout .column {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin: 0 5px;
+      }
+
+      .three-column-layout {
+        display: flex;
+      }
+
+      .three-column-layout .column {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin: 0 5px;
+      }
+      </style>`;
+
+    let leftDropSpaceHTML = `<html><head><title>Left Drop Space Preview</title>${stylesHtml}</head><body>   <div className="drop-container">
     <div id="left-drop-space"
       className="drop-space">`;
-  
+
     // Include the content without top-right-icons div
     leftSideItems.forEach((item) => {
-      const contentWithoutIcons = item.content.replace('<div className="top-right-icons">...</div>', '');
+      const contentWithoutIcons = item.content.replace(
+        '<div className="top-right-icons">...</div>',
+        ''
+      );
       leftDropSpaceHTML += contentWithoutIcons;
     });
-  
+
     leftDropSpaceHTML += '</div></div></body></html>';
-  
+
     // Save the HTML content to a file or any other preferred method
     // For demonstration, we can simply log it to the console
     console.log(leftDropSpaceHTML);
   };
-  
 
   const handleShowPreview = () => {
     // Open a new window/tab and display the HTML preview
     const previewWindow = window.open('', '_blank');
-    const styles = `
-    <style>
+    const stylesHtml = `<style>
       .App {
         text-align: center;
         margin-top: 50px;
@@ -397,15 +411,19 @@ function App() {
         border: 1px solid #ccc;
         margin: 0 5px;
       }
-    </style>
-  `;
-  previewWindow.document.write(`<html><head><title>Left Drop Space Preview</title>${styles}</head><body><div className="App">
-  <div className="drop-container">
-    <div id="left-drop-space"
-      className="drop-space">`);
- 
+    </style>`;
+
+    previewWindow.document
+      .write(`<html><head><title>Left Drop Space Preview</title>${stylesHtml}</head><body><div className="App">
+    <div className="drop-container">
+      <div id="left-drop-space"
+        className="drop-space">`);
+
     leftSideItems.forEach((item) => {
-      const contentWithoutIcons = item.content.replace('<div className="top-right-icons">...</div>', '');
+      const contentWithoutIcons = item.content.replace(
+        '<div className="top-right-icons">...</div>',
+        ''
+      );
       previewWindow.document.write(contentWithoutIcons);
     });
 
@@ -417,7 +435,8 @@ function App() {
     <div className="App">
       <h1>Drag and Drop HTML Components</h1>
       <div className="drop-container">
-        <div id="left-drop-space"
+        <div
+          id="left-drop-space"
           onDrop={handleDropLeft}
           onDragOver={handleDragOver}
           className="drop-space"
@@ -455,93 +474,56 @@ function App() {
           {selectedItem && (
             <div className="editor">
               <h2>Edit Content</h2>
-              <textarea value={editedContent} onChange={handleContentChange} rows="20" cols="50" />
-              <h3>Edit Attributes:</h3>
-              <ul>
-                {editableAttributes.map((attr, index) => (
-                  <li key={index}>
-                    <strong>{attr.name}:</strong>{' '}
-                    <input
-                      type="text"
-                      value={attr.value}
-                      onChange={(e) => handleAttributeChange(e, index)}
-                    />
-                  </li>
-                ))}
-              </ul>
-              <h3>Edit Style:</h3>
-              <ul>
-                <li>
-                  <label htmlFor="headingType">Heading Type:</label>
-                  <select
-                    id="headingType"
-                    value={headingType}
-                    onChange={(e) => setHeadingType(e.target.value)}
-                  >
-                    <option value="h1">Heading 1</option>
-                    <option value="h2">Heading 2</option>
-                    <option value="h3">Heading 3</option>
-                    {/* Add more options as needed */}
-                  </select>
-                </li>
-                <li>
-                  <label htmlFor="fontFamily">Font Family:</label>
-                  <input
-                    type="text"
-                    id="fontFamily"
-                    value={fontFamily}
-                    onChange={(e) => setFontFamily(e.target.value)}
-                  />
-                </li>
-                <li>
-                  <label htmlFor="fontWeight">Font Weight:</label>
-                  <input
-                    type="text"
-                    id="fontWeight"
-                    value={fontWeight}
-                    onChange={(e) => setFontWeight(e.target.value)}
-                  />
-                </li>
-                <li>
-                  <label htmlFor="fontSize">Font Size:</label>
-                  <input
-                    type="text"
-                    id="fontSize"
-                    value={fontSize}
-                    onChange={(e) => setFontSize(e.target.value)}
-                  />
-                </li>
-                <li>
-                  <label htmlFor="color">Color:</label>
-                  <input
-                    type="color"
-                    id="color"
-                    value={color}
-                    onChange={(e) => setColor(e.target.value)}
-                  />
-                </li>
-                <li>
-                  <label htmlFor="textAlign">Text Align:</label>
-                  <select
-                    id="textAlign"
-                    value={textAlign}
-                    onChange={(e) => setTextAlign(e.target.value)}
-                  >
-                    <option value="left">Left</option>
-                    <option value="center">Center</option>
-                    <option value="right">Right</option>
-                  </select>
-                </li>
-                <li>
-                  <label htmlFor="lineHeight">Line Height:</label>
-                  <input
-                    type="text"
-                    id="lineHeight"
-                    value={lineHeight}
-                    onChange={(e) => setLineHeight(e.target.value)}
-                  />
-                </li>
-              </ul>
+              <textarea
+                value={editedContent}
+                onChange={handleContentChange}
+                rows="20"
+                cols="50"
+              />
+              <table>
+                <tbody>
+                  <tr>
+                    <td>
+                      <h3>Edit Attributes:</h3>
+                    </td>
+                    <td></td>
+                  </tr>
+                  {editableAttributes.map((attr, index) => (
+                    <tr key={index}>
+                      <td>
+                        <strong>{attr.name}:</strong>
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          value={attr.value}
+                          onChange={(e) => handleAttributeChange(e, index)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                  <tr>
+                    <td>
+                      <h3>Edit Style:</h3>
+                    </td>
+                    <td></td>
+                  </tr>
+                  {Object.entries(styles).map(([style, value], index) => (
+                    <tr key={index}>
+                      <td>
+                        <strong>{style}:</strong>
+                      </td>
+                      <td>
+                        <input
+                          type="text"
+                          value={value}
+                          onChange={(e) => handleStyleChange(e, index)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
 
               <button onClick={handleSave}>Save</button>
             </div>
@@ -549,9 +531,9 @@ function App() {
         </div>
       </div>
       <div className="buttons">
-            <button onClick={handleSaveAsHTML}>Save as HTML</button>
-            <button onClick={handleShowPreview}>Show Preview</button>
-          </div>
+        <button onClick={handleSaveAsHTML}>Save as HTML</button>
+        <button onClick={handleShowPreview}>Show Preview</button>
+      </div>
     </div>
   );
 }
